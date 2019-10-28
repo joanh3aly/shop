@@ -2,24 +2,28 @@
 #include <string.h>
 #include <stdlib.h>
 
-struct Product {
-	char* name;
+struct Product
+{
+	char *name;
 	double price;
 };
 
-struct ProductStock {
+struct ProductStock
+{
 	struct Product product;
 	int quantity;
 };
 
-struct Shop {
+struct Shop
+{
 	double cash;
 	struct ProductStock stock[20];
 	int index;
 };
 
-struct Customer {
-	char* name;
+struct Customer
+{
+	char *name;
 	double budget;
 	struct ProductStock shoppingList[10];
 	int index;
@@ -37,145 +41,168 @@ void printProduct(struct Product p)
 // 	printf("-------------\n");
 // }
 
-
 double findProductPrice(struct Shop s, char *n)
 {
 	for (int i = 0; i < s.index; i++)
 	{
-    struct Product product = s.stock[i].product;
+		struct Product product = s.stock[i].product;
 		// printProduct(s.stock[i].product);
 		char *name = product.name;
-    if (strcmp(name,n) == 0)
-    {
-      return product.price;
-    }
+		if (strcmp(name, n) == 0)
+		{
+			return product.price;
+		}
 	}
-  return -1;
+	return -1;
 }
 
 struct Customer createCustomerFromCsv(struct Shop s)
 {
-    FILE * fp;
-    char * line = NULL;
-    size_t len = 0;
-    ssize_t read;
-    fp = fopen("customer-2.csv", "r");
-    if (fp == NULL)
-        exit(EXIT_FAILURE);
+	FILE *fp;
+	char *line = NULL;
+	size_t len = 0;
+	ssize_t read;
+	fp = fopen("customer-2.csv", "r");
+	if (fp == NULL)
+		exit(EXIT_FAILURE);
 
-		getline(&line, &len, fp);
-		char *n = strtok(line, ",");
-		char *b = strtok(NULL, ",");
+	getline(&line, &len, fp);
+	char *n = strtok(line, ",");
+	char *b = strtok(NULL, ",");
 
-		char *topLineName = malloc(sizeof(char) * 100);
-		double topLinebudget = atof(b);
-		strcpy(topLineName, n);
-		printf("\n First line name: %s \n First line budget: %.2f \n", topLineName, topLinebudget);
-		struct Customer customer = { topLineName, topLinebudget };
+	char *topLineName = malloc(sizeof(char) * 100);
+	double topLinebudget = atof(b);
+	strcpy(topLineName, n);
+	printf("\n First line name: %s \n First line budget: %.2f \n", topLineName, topLinebudget);
+	struct Customer customer = {topLineName, topLinebudget};
 
-    while ((read = getline(&line, &len, fp)) != -1) {
-        char *i = strtok(line, ",");
-        char *q = strtok(NULL, ",");
-        char *item = malloc(sizeof(char) * 100);
-        strcpy(item, i);
-        int quantity = atoi(q);
-				printf("\nItem: %s \n quantity: %d \n", item, quantity);
+	while ((read = getline(&line, &len, fp)) != -1)
+	{
+		char *i = strtok(line, ",");
+		char *q = strtok(NULL, ",");
+		char *item = malloc(sizeof(char) * 100);
+		strcpy(item, i);
+		int quantity = atoi(q);
+		printf("\nItem: %s \n quantity: %d \n", item, quantity);
 
-				double price = findProductPrice(s, item);
-    		printf("prod price %.2f\n", price);
-				printf("-------------\n");
-				
-				struct Product SLProduct = { item, price };
-				struct ProductStock customerShoppingList = { SLProduct, quantity };
+		double price = findProductPrice(s, item);
+		printf("prod price %.2f\n", price);
+		printf("-------------\n");
 
-				customer.shoppingList[customer.index++] = customerShoppingList;
-    }    
+		struct Product SLProduct = {item, price};
+		struct ProductStock customerShoppingList = {SLProduct, quantity};
 
-       
-    return customer;
+		customer.shoppingList[customer.index++] = customerShoppingList;
+	}
+
+	return customer;
 };
 
-int customerInput()
+struct Customer createCustomerFromUserInput(struct Shop s)
 {
-	char* n;
-  char variable;
-  char *customerName = &variable;
+	char *n;
+	char variable;
+	char *inputName = &variable;
 
 	char variable2;
-  char *customerBudget = &variable2;
-  // double customerBudget;
-	
-	printf("Enter you name:\n");
-	gets(customerName);
-	printf("Hello %s\n", customerName);
+	char *inputBudget = &variable2;
+	char variable3;
+	char *inputItem = &variable3;
+	char variable4;
+	char *inputQuantity = &variable4;
 
-	printf("Enter you budget:\n");
-	gets(customerBudget);
-	int budget = atoi(customerBudget);
-	printf("Hello %d\n", budget);
-	
+	printf("Enter you name:\n");
+	gets(inputName);
+	printf("Hello %s\n", inputName);
+	char *name = malloc(sizeof(char) * 100);
+	strcpy(name, inputName);
+
+	printf("Enter your budget:\n");
+	gets(inputBudget);
+	double budget = atof(inputBudget);
+	printf("Budget is %.2f \n", budget);
+
+	printf("Enter your item:\n");
+	gets(inputItem);
+	printf("Item is %s\n", inputItem);
+	char *item = malloc(sizeof(char) * 100);
+	strcpy(item, inputItem);
+	printf("Item 2 is %s\n", item);
+
+	printf("Enter amount:\n");
+	gets(inputQuantity);
+	int quantity = atoi(inputQuantity);
+	printf("amount is %d \n", quantity);
+
+	struct Customer customer = {name, budget};
+	double price = findProductPrice(s, item);
+	printf("price is %.2f \n", price);
+	struct Product SLProduct = {item, price};
+	struct ProductStock customerShoppingList = {SLProduct, quantity};
+
+	customer.shoppingList[customer.index++] = customerShoppingList;
+	printf("-------------\n");
+
 	// if ((strcmp(customerName,"Alice")==0) || (strcmp(customerName,"Bob")==0))
 	// {
-	// 	printf("Hello %s\n", customerName);	
-	// } else 
+	// 	printf("Hello %s\n", customerName);
+	// } else
 	// {
 	// 	printf("Hello lowly peasant!\n");
 	// }
-	
-	return 0;
+
+	// return 0;
+	return customer;
 }
 
 void printCustomer(struct Customer c)
 {
 	printf("CUSTOMER NAME: %s \nCUSTOMER BUDGET: %.2f\n", c.name, c.budget);
 	printf("-------------\n");
-	for(int i = 0; i < c.index; i++)
+	for (int i = 0; i < c.index; i++)
 	{
 		printProduct(c.shoppingList[i].product);
 		printf("quantity %d \n", c.shoppingList[i].quantity);
 	}
 }
 
-
 struct Shop createAndStockShop()
 {
-	  // struct Shop shop = { 200 };
-    FILE * fp;
-    char * line = NULL;
-    size_t len = 0;
-    ssize_t read;
+	FILE *fp;
+	char *line = NULL;
+	size_t len = 0;
+	ssize_t read;
 
-    fp = fopen("stock-2.csv", "r");
-    if (fp == NULL)
-        exit(EXIT_FAILURE);
+	fp = fopen("stock-2.csv", "r");
+	if (fp == NULL)
+		exit(EXIT_FAILURE);
 
-    getline(&line, &len, fp);
-		double cashInShop = atof(line); // string to float
-		struct Shop shop = { cashInShop };
+	getline(&line, &len, fp);
+	double cashInShop = atof(line); // string to float
+	struct Shop shop = {cashInShop};
 
-    while ((read = getline(&line, &len, fp)) != -1) {
-        // printf("Retrieved line of length %zu:\n", read);
-        // printf("%s IS A LINE", line);
-        char *n = strtok(line, ",");
-        char *p = strtok(NULL, ",");
-        char *q = strtok(NULL, ",");
-        int quantity = atoi(q);
-        double price = atof(p);
-        char *name = malloc(sizeof(char) * 50);
-        strcpy(name, n);
-        // printf("NAME OF PRODUCT %s PRICE %.2f QUANTITY %d\n", name, price, quantity);
+	while ((read = getline(&line, &len, fp)) != -1)
+	{
+		char *n = strtok(line, ",");
+		char *p = strtok(NULL, ",");
+		char *q = strtok(NULL, ",");
+		int quantity = atoi(q);
+		double price = atof(p);
+		char *name = malloc(sizeof(char) * 50);
+		strcpy(name, n);
+		// printf("NAME OF PRODUCT %s PRICE %.2f QUANTITY %d\n", name, price, quantity);
 
-        struct Product product = { name, price };
-        struct ProductStock stockItem = { product, quantity };
-        shop.stock[shop.index++] = stockItem;
-    }
-	
+		struct Product product = {name, price};
+		struct ProductStock stockItem = {product, quantity};
+		shop.stock[shop.index++] = stockItem;
+	}
+
 	return shop;
 }
 
 void printShop(struct Shop s)
 {
-	printf("Shop has %.2f in cash\n", s.cash);
+	printf("Shop has %.2f in cash \n", s.cash);
 	for (int i = 0; i < s.index; i++)
 	{
 		printProduct(s.stock[i].product);
@@ -184,23 +211,15 @@ void printShop(struct Shop s)
 	}
 }
 
-
 double updateShop(struct Shop s, struct Customer c)
 {
 	printf("Shop has %.2f in cash\n", s.cash);
-
-	// struct Shop {
-	// 	double cash;
-	// 	struct ProductStock stock[20];
-	// 	int index;
-
-
-	printf("CUSTOMER NAME: %s \nCUSTOMER BUDGET: %.2f\n", c.name, c.budget);
+	printf("NAME: %s \n BUDGET: %.2f\n", c.name, c.budget);
 	printf("-------------\n");
-	
+
 	for (int i = 0; i < s.index; i++)
 	{
-    struct Product product = s.stock[i].product;
+		struct Product product = s.stock[i].product;
 		// printProduct(s.stock[i].product);
 		char *shopProductname = product.name;
 
@@ -218,26 +237,25 @@ double updateShop(struct Shop s, struct Customer c)
 			int SLProductQuantity = SLProductStock.quantity;
 			// printf("shopProductname %s \n SLProductName %s \n", shopProductname,SLProductName);
 
-			if (strcmp(shopProductname,SLProductName) == 0)
+			if (strcmp(shopProductname, SLProductName) == 0)
 			{
 				printf("%s price is €%.2f \n", shopProductname, product.price);
 				printf("%s quantity on shopping list %d \n", shopProductname, SLProductQuantity);
 				int totalPerProduct = product.price * SLProductQuantity;
 				// s.cash += product.price * SLProductQuantity;
 				printf("%s total €%d \n", shopProductname, totalPerProduct);
-				
-	
-				if (shopProductQuantity == 0) 
+
+				if (shopProductQuantity == 0)
 				{
 					printf("%s is out of stock.\n", SLProductName);
 				}
-				else 
-					{
+				else
+				{
 					if (totalPerProduct > c.budget)
 					{
 						printf("Total price of %d€ for %s exceeds %s's budget.\n", totalPerProduct, SLProductName, c.name);
 					}
-					else 
+					else
 					{
 						if (SLProductQuantity > shopProductQuantity)
 						{
@@ -274,28 +292,22 @@ double updateShop(struct Shop s, struct Customer c)
 			}
 		}
 		printf("-------------\n");
-
 	}
-  return -1;
+	return -1;
 }
 
-
-
-
-int main(void) 
+int main(void)
 {
-	
-    struct Shop shop = createAndStockShop();
-    printShop(shop);
+	struct Shop shop = createAndStockShop();
+	printShop(shop);
 
-    customerInput();
+	// struct Customer customer = createCustomerFromCsv(shop);
+	// printCustomer(customer);
 
-    struct Customer customer = createCustomerFromCsv(shop);
-		printCustomer(customer);
+	struct Customer customer = createCustomerFromUserInput(shop);
+	printCustomer(customer);
 
+	updateShop(shop, customer);
 
-		updateShop(shop, customer);
-
-	
-    return 0;
+	return 0;
 }

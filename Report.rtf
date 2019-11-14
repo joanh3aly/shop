@@ -1,0 +1,39 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf500
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red202\green202\blue202;\red23\green23\blue23;\red70\green137\blue204;
+\red212\green214\blue154;\red167\green197\blue152;}
+{\*\expandedcolortbl;;\cssrgb\c83137\c83137\c83137;\cssrgb\c11765\c11765\c11765;\cssrgb\c33725\c61176\c83922;
+\cssrgb\c86275\c86275\c66667;\cssrgb\c70980\c80784\c65882;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Both have code reuse - DRY principle.\
+\
+Java has extra methods that you need to write to set data in memory structures.\
+With C you just set the instance of the struct to equal a new value.\
+\
+To get structs in C, you just call an instance of the struct and navigate to it\'92s key as it has a JSON object like structure  ie: shop.cash to get the shop\'92s cash.\
+In Java you must create a method to get the data from memory ie: shop.getCash()\
+\
+It\'92s nice that you have a user interface in Java which can generate these structures for your automatically.\
+\
+As C is not object oriented, it has a much simpler structure compared to Java. You don\'92t need to \
+\
+\
+Setting variables and manually assigning memory to them.
+\f1 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 \'a0\'a0\cf4 \strokec4 char\cf2 \strokec2 \'a0*topLineName\'a0=\'a0\cf5 \strokec5 malloc\cf2 \strokec2 (\cf4 \strokec4 sizeof\cf2 \strokec2 (\cf4 \strokec4 char\cf2 \strokec2 )\'a0*\'a0\cf6 \strokec6 100\cf2 \strokec2 );\cb1 \
+
+\f0 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 \
+\
+User input\
+Very easily handled in C, Java relies on an external library.\
+You cannot input multiple strings at a time using the Scanner library. You must parse them as ArrayLists. This makes the code more complex. \
+\
+Superclasses allow for the calling of methods from another parent class, which also allows you to reuse code instead of rewriting it, making the code more concise and easy to maintain. \
+It\'92s also easy to pass values to a super class as arguments. This isn\'92t possible in C as it\'92s not object oriented.\
+\
+\
+\
+\
+ }

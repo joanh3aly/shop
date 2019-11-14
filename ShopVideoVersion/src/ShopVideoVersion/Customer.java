@@ -51,6 +51,9 @@ public class Customer {
 		return budget;
 	}
 
+	public void setBudget(double budget) {
+		this.budget = budget;
+	}
 
 	public ArrayList<ProductStock> getShoppingList() {
 		return shoppingList;
@@ -68,7 +71,7 @@ public class Customer {
 	
 	public static void main(String[] args) {
 		Customer james = new Customer("src/ShopVideoVersion/customer.csv");
-//		System.out.println(james);
+		System.out.println(james);
 	}
 	
 	

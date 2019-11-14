@@ -44,6 +44,11 @@ public class Shop {
 	public double getCash() {
 		return cash;
 	}
+	
+
+	public void setCash(double cash) {
+		this.cash = cash;
+	}
 
 	public ArrayList<ProductStock> getStock() {
 		return stock;
@@ -66,62 +71,68 @@ public class Shop {
 		return -1;
 	}
 	
-	private void compareLists(String name, String inputName, int customerQuantity, double customerBudget) {
-//		System.out.println(inputName);
-		
+	private void compareLists( String inputName, int customerQuantity, double customerBudget, Customer c) {
+//		Customer c = new Customer("src/ShopVideoVersion/customer.csv");
+//		
 		for (ProductStock productStock : stock) {
 			Product p = productStock.getProduct();
-//			System.out.println("p.getName() "+ p.getName());
+			
 			if (p.getName().equals(inputName)) {
-				System.out.println("inputName "+ inputName);
+				System.out.println(".............................................\n");
+				System.out.println("Product name requested : "+ inputName);
+				System.out.println("Quantity of product requested : "+ customerQuantity);
             	double totalPricePerProduct = p.getPrice() * customerQuantity;
             	System.out.println("Total price for "+ p.getName() +" is "+ totalPricePerProduct);
             	if (productStock.getQuantity() == 0) {
-//            		int shopQuantity = productStock.getQuantity();
+            		System.out.println("Quantity of items of "+ p.getName() +" in shop is "+ productStock.getQuantity());
     				System.out.println(p.getName() +" is out of stock");
     			} else if (totalPricePerProduct > customerBudget) {
+    				System.out.println("Customer budget is now "+ c.getBudget());
 					System.out.println(p.getName() +" is over budget");
 					break;
 				} else if (customerQuantity > productStock.getQuantity()) {	
 					System.out.println("Number of "+ p.getName() +" in shopping list exceeds stock capacity.");
 					double totalPerProduct = p.getPrice() * productStock.getQuantity();
-					System.out.println("Total of remaining items is "+ totalPerProduct);
+					System.out.println("Total cost of remaining items in stock is "+ totalPerProduct);
 					double shopCash = this.getCash();
 					System.out.println("Cash in shop was "+ shopCash);
 					shopCash += totalPerProduct;
-					System.out.println("Cash in shop is now "+ shopCash);
+					this.setCash(shopCash);
+					System.out.println("Cash in shop is now "+ this.getCash());
+					System.out.println("Customer budget was "+ customerBudget);
 					customerBudget -= totalPerProduct;
-					System.out.println("Customer budget is now "+ customerBudget);
+					c.setBudget(customerBudget);
+					System.out.println("Customer budget is now "+ c.getBudget());
+					System.out.println("Quantity of items of "+ p.getName() +" in shop was "+ productStock.getQuantity());
 					int shopQuantity = productStock.getQuantity() - customerQuantity;
-					System.out.println("Quantity of items of "+ p.getName() +" in shop is now "+ shopQuantity);
+					if (shopQuantity < 0 ) {
+						productStock.setQuantity(0);
+						System.out.println("Quantity of items of "+ p.getName() +" in shop is now "+ productStock.getQuantity());
+					} else {
+						productStock.setQuantity(shopQuantity);
+						System.out.println("Quantity of items of "+ p.getName() +" in shop is now "+ productStock.getQuantity());
+					}			
 				} else {
 					double totalPerProduct = p.getPrice() * customerQuantity;
-					System.out.println("Total of remaining items is "+ totalPerProduct);
+					System.out.println("Total of requested items is "+ totalPerProduct);
 					double shopCash = this.getCash();
 					System.out.println("Cash in shop was "+ shopCash);
 					shopCash += totalPerProduct;
-					System.out.println("Cash in shop is now "+ shopCash);
+					this.setCash(shopCash);
+					System.out.println("Cash in shop is now "+ this.getCash());
+					System.out.println("Customer budget was "+ customerBudget);
 					customerBudget -= totalPerProduct;
-					System.out.println("Customer budget is now "+ customerBudget);
+					c.setBudget(customerBudget);
+					System.out.println("Customer budget is now "+ c.getBudget());
 					int shopQuantity = productStock.getQuantity() - customerQuantity;
-					System.out.println("Quantity of items of "+ p.getName() +" in shop is now "+ shopQuantity);
+					productStock.setQuantity(shopQuantity);
+					System.out.println("Quantity of items of "+ p.getName() +" in shop is now "+ productStock.getQuantity());
 				}
-			}
-    	}
-	}
-	
-	public void processOrder(Customer c) {
-		for (ProductStock productStock : stock) {
-			Product p = productStock.getProduct();
-			int quantity = productStock.getQuantity();
-			double price = findPrice(p.getName());
-			System.out.println(p.getName() + " costs " + price);
-			
-//			p.setPrice(price);
+			}						
 		}
 	}
 	
-	public void processInputOrder() {
+	public void processInputOrder(Customer c) {
 		shoppingList = new ArrayList<>();
 		Scanner scan = new Scanner(System.in);
 
@@ -141,77 +152,22 @@ public class Shop {
 		ProductStock ps = new ProductStock(product, amount);
 		shoppingList.add(ps);
 		
-		for (ProductStock productStock : stock) {
-			Product p = productStock.getProduct();
-			int quantity = productStock.getQuantity();
-//			double price = findPrice(p.getName());
-			compareLists(p.getName(), productName, amount, customerBudget);
-//			System.out.println(p.getName() + " costs " + price);
-//			
-//			p.setPrice(price);
-		}
+		compareLists(productName, amount, customerBudget, c);
 	}
 	
-	public void updateShopFromCsv(Customer c, Shop s) {
-		
+	public void updateShopFromCsv(Customer c, Shop s) {		
 		ListIterator<ProductStock> customerIterator = c.getShoppingList().listIterator(); 
 		ListIterator<ProductStock> shopIterator = s.getStock().listIterator(); 
 		
 		while (customerIterator.hasNext()) { 
-            while (shopIterator.hasNext()) { 
-            	ProductStock customerList = customerIterator.next();
-            	ProductStock shopList = shopIterator.next();
-                if (customerList.getProduct().getName().equals(shopList.getProduct().getName())) {
-                	int customerQuantity = customerList.getQuantity();
-                	int shopQuantity = shopList.getQuantity();
-                	double price = shopList.getProduct().getPrice();
-                	double totalPricePerProduct = price * customerQuantity;
-                	System.out.println(totalPricePerProduct);
-                	double customerBudget = c.getBudget();
-                	System.out.println(customerBudget);
-                	
-                	if (shopQuantity == 0) 
-            			{
-            				System.out.println(customerList.getProduct().getName());
-            				System.out.println("Out of stock");
-            			}
-                	else 
-        				{
-        				if (totalPricePerProduct > c.getBudget())
-        				{
-        					System.out.println(customerList.getProduct().getName());
-        					System.out.println("this is over budget");
-        				}
-        				else 
-//        					{
-        					if (customerQuantity > shopQuantity)
-        					{	
-        						System.out.println(customerQuantity);
-        						System.out.println(customerList.getProduct().getName());
-        						System.out.println("Number of items in shopping list exceeds stock capacity.");
-        						double totalPerProduct = price * shopQuantity;
-        						System.out.println("Total of remaining items is ");
-        						System.out.println(totalPerProduct);
-        						double shopCash = s.getCash();
-        						shopCash += totalPerProduct;
-        						System.out.println("Cash in shop is now ");
-        						System.out.println(shopCash);
-        						customerBudget -= totalPerProduct;
-        						System.out.println("Customer budget is now ");
-        						System.out.println(customerBudget);
-        						shopQuantity -= customerQuantity;
-        						System.out.println("Quantity of items in shop is now ");
-        						System.out.println(shopQuantity);
-        						// struct Product shopProductUpdate = { product.name, product.price };
-        						// struct ProductStock stockItem = { shopProductUpdate, shopProductQuantity };
-        						// s.stock[s.index++] = stockItem;
-        					}
-        			}
-                }
-            }	
-		
-		}
-	}
+        	ProductStock customerList = customerIterator.next();
+        	String customerProductName = customerList.getProduct().getName();
+        	int customerQuantity = customerList.getQuantity();
+        	double customerBudget = c.getBudget();
+        	compareLists(customerProductName, customerQuantity, customerBudget, c);
+        }
+    }	
+
 	
 	public static void main(String[] args) {
 		Shop shop = new Shop("src/ShopVideoVersion/stock.csv");
@@ -221,14 +177,15 @@ public class Shop {
 		System.out.println("For live mode press 1, for bulk mode press 2");
 		int mode = scan.nextInt();
 		System.out.println("Mode chosen: "+ mode);
-		if (mode == 1) {
-			shop.processInputOrder();
-		} else if (mode == 2) {
-			shop.updateShopFromCsv(c, shop);
-		}		
-	
+		if (c.getBudget() > 0) {
+			if (mode == 1) {
+				shop.processInputOrder(c);
+			} else if (mode == 2) {
+				shop.updateShopFromCsv(c, shop);
+			}	
+		} else {
+			System.out.println("You are out of budget");	
+		}
 	}
 	
-	
-
 }

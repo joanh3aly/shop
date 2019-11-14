@@ -103,13 +103,24 @@ struct Customer createCustomerFromUserInput(struct Shop s)
 	char *n;
 	char variable;
 	char *inputName = &variable;
-
+	// char variable1;
+	// char *mode = &variable;
 	char variable2;
 	char *inputBudget = &variable2;
 	char variable3;
 	char *inputItem = &variable3;
 	char variable4;
 	char *inputQuantity = &variable4;
+
+	// printf("Press 1 for input mode and 2 for bulk mode:\n");
+	// gets(mode);
+	// int quantity = atoi(inputQuantity);
+	// printf("Mode is %d \n", mode);
+	// if (mode == 1){
+	// 	createCustomerFromCsv(shop);
+	// } else if (mode == 2){
+	// 	createCustomerFromUserInput(shop);
+	// }
 
 	printf("Enter you name:\n");
 	gets(inputName);
@@ -299,7 +310,14 @@ double updateShop(struct Shop s, struct Customer c)
 int main(void)
 {
 	struct Shop shop = createAndStockShop();
-	printShop(shop);
+	// printShop(shop);
+
+	char variable1;
+	char *mode = &variable1;
+	// printf("Press 1 for input mode and 2 for bulk mode:\n");
+	// gets(mode);
+	// int mode = atoi(mode);
+
 
 	// struct Customer customer = createCustomerFromCsv(shop);
 	// printCustomer(customer);
